@@ -1,13 +1,13 @@
 param (
   [Parameter()]
   [switch]
-  $UninstallSpotifyStoreEdition = (Read-Host -Prompt 'Uninstall Spotify Windows Store edition if it exists (Y/N)') -eq 'y',
+  $UninstallSpotifyStoreEdition = (Read-Host -Prompt 'Ingin uninstall Spotify Windows Store edition jika ada ? *lebih disarankan karena ini hanya akan bekerja di versi Spotify on Windows dan tidak akan bekerja di versi Microsoft Store* ketik Y jika Ya, ketik N jika Tidak lalu tekan enter (Y/N)') -eq 'y',
   [Parameter()]
   [switch]
   $UpdateSpotify,
   [Parameter()]
   [switch]
-  $RemoveAdPlaceholder = (Read-Host -Prompt 'Optional - Remove ad placeholder and upgrade button. (Y/N)') -eq 'y'
+  $RemoveAdPlaceholder = (Read-Host -Prompt 'Optional - Hilangkan iklan dan tombol "upgrade" di spotify ? (Y/N)') -eq 'y'
 )
 
 # Ignore errors from `Stop-Process`
@@ -48,7 +48,7 @@ function Get-File
 
   if ($useBitTransfer)
   {
-    Write-Information -MessageData 'Using a fallback BitTransfer method since you are running Windows PowerShell'
+    Write-Information -MessageData 'memakai metode fallback BitTransfer karena kamu menggunakan Windows PowerShell'
     Start-BitsTransfer -Source $Uri -Destination "$($TargetFile.FullName)"
   }
   else
@@ -75,10 +75,10 @@ function Get-File
       $targetStream.Write($buffer, 0, $count)
       $count = $responseStream.Read($buffer, 0, $buffer.length)
       $downloadedBytes = $downloadedBytes + $count
-      Write-Progress -Activity "Downloading file '$downloadedFileName'" -Status "Downloaded ($([System.Math]::Floor($downloadedBytes/1024))K of $($totalLength)K): " -PercentComplete ((([System.Math]::Floor($downloadedBytes / 1024)) / $totalLength) * 100)
+      Write-Progress -Activity "Mendownload file '$downloadedFileName'" -Status "Mendownload ($([System.Math]::Floor($downloadedBytes/1024))K of $($totalLength)K): " -PercentComplete ((([System.Math]::Floor($downloadedBytes / 1024)) / $totalLength) * 100)
     }
 
-    Write-Progress -Activity "Finished downloading file '$downloadedFileName'"
+    Write-Progress -Activity "Selesai mendownloading file '$downloadedFileName'"
 
     $targetStream.Flush()
     $targetStream.Close()
@@ -107,15 +107,13 @@ function Test-SpotifyVersion
 
 Write-Host @'
 *****************
-@mrpond message:
-#Thailand #ThaiProtest #ThailandProtest #freeYOUTH
-Please retweet these hashtag, help me stop dictator government!
+LUV SARAH LUV SARAH LUV SARAH LUV SARAH
 *****************
 '@
 
 Write-Host @'
 *****************
-Authors: @Nuzair46, @KUTlime
+Authors: MartinoMayka
 *****************
 '@
 
@@ -125,7 +123,7 @@ $spotifyApps = Join-Path -Path $spotifyDirectory -ChildPath 'Apps'
 
 [System.Version] $actualSpotifyClientVersion = (Get-ChildItem -LiteralPath $spotifyExecutable -ErrorAction:SilentlyContinue).VersionInfo.ProductVersionRaw
 
-Write-Host "Stopping Spotify...`n"
+Write-Host "Menghentikan Spotify...`n"
 Stop-Process -Name Spotify
 Stop-Process -Name SpotifyWebHelper
 
@@ -136,16 +134,16 @@ if ($PSVersionTable.PSVersion.Major -ge 7)
 
 if (Get-AppxPackage -Name SpotifyAB.SpotifyMusic)
 {
-  Write-Host "The Microsoft Store version of Spotify has been detected which is not supported.`n"
+  Write-Host "Spotify versi Microsoft Store telah terdeteksi yang mana tidak mendukung untuk menggunakan alat ini.`n"
 
   if ($UninstallSpotifyStoreEdition)
   {
-    Write-Host "Uninstalling Spotify.`n"
+    Write-Host "Menguninstall Spotify.`n"
     Get-AppxPackage -Name SpotifyAB.SpotifyMusic | Remove-AppxPackage
   }
   else
   {
-    Read-Host "Exiting...`nPress any key to exit..."
+    Read-Host "Exiting...`Tekan tombol apa saja untuk exit..."
     exit
   }
 }
@@ -161,11 +159,11 @@ try
 catch
 {
   Write-Output $_
-  Read-Host 'Press any key to exit...'
+  Read-Host 'Tekan tombol apa saja untuk exit...'
   exit
 }
 
-Write-Host "Downloading latest patch (chrome_elf.zip)...`n"
+Write-Host "Mendownload patch terbaru (chrome_elf.zip)...`n"
 $elfPath = Join-Path -Path $PWD -ChildPath 'chrome_elf.zip'
 try
 {
@@ -186,7 +184,7 @@ $unsupportedClientVersion = ($actualSpotifyClientVersion | Test-SpotifyVersion -
 
 if (-not $UpdateSpotify -and $unsupportedClientVersion)
 {
-  if ((Read-Host -Prompt 'In order to install Block the Spot, your Spotify client must be updated. Do you want to continue? (Y/N)') -ne 'y')
+  if ((Read-Host -Prompt 'Untuk menggunakan alat ini, versi Spotify anda harus diperbarui. apakah anda ingin melanjutkan? (Y/N)') -ne 'y')
   {
     exit
   }
@@ -194,7 +192,7 @@ if (-not $UpdateSpotify -and $unsupportedClientVersion)
 
 if (-not $spotifyInstalled -or $UpdateSpotify -or $unsupportedClientVersion)
 {
-  Write-Host 'Downloading the latest Spotify full setup, please wait...'
+  Write-Host 'mendownload versi Spotify terbaru, harap tunggu...'
   $spotifySetupFilePath = Join-Path -Path $PWD -ChildPath 'SpotifyFullSetup.exe'
   try
   {
@@ -204,28 +202,28 @@ if (-not $spotifyInstalled -or $UpdateSpotify -or $unsupportedClientVersion)
   catch
   {
     Write-Output $_
-    Read-Host 'Press any key to exit...'
+    Read-Host 'Tekan tombol apa saja untuk exit...'
     exit
   }
   New-Item -Path $spotifyDirectory -ItemType:Directory -Force | Write-Verbose
 
   [System.Security.Principal.WindowsPrincipal] $principal = [System.Security.Principal.WindowsIdentity]::GetCurrent()
   $isUserAdmin = $principal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
-  Write-Host 'Running installation...'
+  Write-Host 'Menjalankan Instalasi...'
   if ($isUserAdmin)
   {
     Write-Host
-    Write-Host 'Creating scheduled task...'
+    Write-Host 'Menjalankan aplikasi...'
     $apppath = 'powershell.exe'
     $taskname = 'Spotify install'
     $action = New-ScheduledTaskAction -Execute $apppath -Argument "-NoLogo -NoProfile -Command & `'$spotifySetupFilePath`'"
     $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date)
     $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -WakeToRun
     Register-ScheduledTask -Action $action -Trigger $trigger -TaskName $taskname -Settings $settings -Force | Write-Verbose
-    Write-Host 'The install task has been scheduled. Starting the task...'
+    Write-Host 'Memulai menjalankan aplikasi...'
     Start-ScheduledTask -TaskName $taskname
     Start-Sleep -Seconds 2
-    Write-Host 'Unregistering the task...'
+    Write-Host 'Unregister aplikasi...'
     Unregister-ScheduledTask -TaskName $taskname -Confirm:$false
     Start-Sleep -Seconds 2
   }
@@ -261,7 +259,7 @@ if (-not $spotifyInstalled -or $UpdateSpotify -or $unsupportedClientVersion)
   }
 
 
-  Write-Host 'Stopping Spotify...Again'
+  Write-Host 'Menghentikan Spotify'
 
   Stop-Process -Name Spotify
   Stop-Process -Name SpotifyWebHelper
@@ -274,7 +272,7 @@ if ((Test-Path $elfDllBackFilePath) -eq $false)
   Move-Item -LiteralPath "$elfBackFilePath" -Destination "$elfDllBackFilePath" | Write-Verbose
 }
 
-Write-Host 'Patching Spotify...'
+Write-Host 'Melakukan patch Spotify...'
 $patchFiles = (Join-Path -Path $PWD -ChildPath 'chrome_elf.dll'), (Join-Path -Path $PWD -ChildPath 'config.ini')
 
 Copy-Item -LiteralPath $patchFiles -Destination "$spotifyDirectory"
@@ -307,7 +305,7 @@ if ($RemoveAdPlaceholder)
     Copy-Item -LiteralPath $xpuiUnpackedPath -Destination "$xpuiUnpackedPath.bak"
     $xpuiContents = Get-Content -LiteralPath $xpuiUnpackedPath -Raw
 
-    Write-Host 'Spicetify detected - You may need to reinstall BTS after running "spicetify apply".';
+    Write-Host 'Spicetify terdeteksi - Anda mungkin perlu menginstal ulang BTS setelah menjalankan "spicetify apply".';
   }
   else
   {
@@ -343,7 +341,7 @@ if ($RemoveAdPlaceholder)
 }
 else
 {
-  Write-Host "Won't remove ad placeholder and upgrade button.`n"
+  Write-Host "Tidak menghapus iklan dan tombol upgrade.`n"
 }
 
 $tempDirectory = $PWD
@@ -351,15 +349,13 @@ Pop-Location
 
 Remove-Item -LiteralPath $tempDirectory -Recurse
 
-Write-Host 'Patching Complete, starting Spotify...'
+Write-Host 'Patch selesai, membuka Spotify...'
 
 Start-Process -WorkingDirectory $spotifyDirectory -FilePath $spotifyExecutable
-Write-Host 'Done.'
+Write-Host 'Selesai.'
 
 Write-Host @'
 *****************
-@mrpond message:
-#Thailand #ThaiProtest #ThailandProtest #freeYOUTH
-Please retweet these hashtag, help me stop dictator government!
+LUV SARAH LUV SARAH LUV SARAH LUV SARAH
 *****************
 '@
